@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from '../decorator/skip-auth.decorator';
 import { JWTPayload, TokenRefreshPayload } from 'src/common/dto/auth/auth.dto';
-import { RefreshTokenInvalidException } from '../refresh.exception';
+import { RefreshTokenInvalidException } from '../strategies/refresh.strategy';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(['jwt', 'refresh']) implements CanActivate {

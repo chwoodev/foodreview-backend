@@ -3,10 +3,11 @@ import { PrismaModule } from "prisma/prisma.module";
 import { ReviewsService } from "./reviews.service";
 import { ReviewsController } from "./reviews.controller";
 import { ReviewRepository } from "prisma/repositories/review.repository";
+import { ImageRepository } from "prisma/repositories/image.repository";
 
 
 @Module({
-    providers: [ReviewsService, ReviewRepository],
+    providers: [ReviewsService, ReviewRepository, ImageRepository],
     imports: [PrismaModule],
     exports: [ReviewsService],
     controllers: [ReviewsController]

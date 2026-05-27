@@ -1,4 +1,4 @@
-import { IsInt, IsString, Max, Min } from "node_modules/class-validator/types";
+import { IsInt, IsString, Max, Min } from 'class-validator';
 
 
 export class ReviewCreateBodyDTO {

@@ -24,3 +24,10 @@ export type ReviewCreateDTO = {
   amount: number;
   price: number;
 };
+
+
+export type UserCreateDTO = {
+  email: string;
+  passwordHash: string;
+  isAdmin?: boolean;
+};
