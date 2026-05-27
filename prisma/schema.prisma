@@ -18,12 +18,53 @@ model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique
   name  String?
+  reviews Review[]
+  images Image[]
 }
 
 model Review {
   id        Int      @default(autoincrement()) @id
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  menu      Menu     @relation(fields: [menuId], references: [id])
+  menuId    Int
+  image     Image    @relation(fields: [imageId], references: [id])
+  imageId   String
   content   String?
   taste     Int
   amount    Int
   price     Int
+}
+
+
+model Menu {
+  id            Int         @id @default(autoincrement())
+  name          String
+  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
+  restaurantId  Int
+  sumTaste      Int         @default(0)
+  sumAmount     Int         @default(0)
+  sumPrice      Int         @default(0)
+  reviewCount   Int         @default(0)
+  reviews       Review[]
+}
+
+
+model Restaurant {
+  id            Int         @id @default(autoincrement())
+  name          String
+  sumTaste      Int         @default(0)
+  sumAmount     Int         @default(0)
+  sumPrice      Int         @default(0)
+  reviewCount   Int         @default(0)
+  menus         Menu[]
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  fileData  Bytes
+  createdAt DateTime @default(now())
+  reviews    Review[]
 }
