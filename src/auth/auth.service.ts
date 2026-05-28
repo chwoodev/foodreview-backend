@@ -35,6 +35,9 @@ export class AuthService {
     };
   }
 
+
+  //TODO! revert cookie domain
+  
   getAccessTokenAndOptions(payload: JWTPayload): TokenAndCookieOptions {
     const token = this.jwtService.sign(toJWTPayload(payload), {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -43,7 +46,7 @@ export class AuthService {
     return {
       token,
       options: {
-        domain: 'localhost',
+        domain: '',
         path: '/',
         httpOnly: true,
         maxAge: Number(this.configService.get('JWT_ACCESS_TOKEN_EXP_SEC')) * 1000,
@@ -59,7 +62,7 @@ export class AuthService {
     return {
       token,
       options: {
-        domain: 'localhost',
+        domain: '',
         path: '/',
         httpOnly: true,
         maxAge: Number(this.configService.get('JWT_ACCESS_TOKEN_EXP_SEC')) * 1000,

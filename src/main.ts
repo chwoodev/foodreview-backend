@@ -23,7 +23,7 @@ export function requestLogMiddlware(request: Request, response: Response, next: 
   response.on('finish', () => {
     const { statusCode } = response;
     const timeString = clc.yellow(`${Date.now() - start}ms`);
-    nestLogger.log(`${method} ${originalUrl} ${statusCode} ${timeString}`);
+    nestLogger.log(`${method} ${originalUrl} ${statusCode} ${timeString} ${JSON.stringify(request.cookies)}`);
   });
   next();
 }
