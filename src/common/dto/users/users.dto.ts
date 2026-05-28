@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsInt } from 'class-validator'
 export class CreateUserDTO {
   @IsString()
   @IsNotEmpty()
-  email: string;
+  username: string;
 
   @IsString()
   @IsNotEmpty()
@@ -13,14 +13,14 @@ export class CreateUserDTO {
 
 export type UserDTO = {
   id: number;
-  email: string;
+  username: string;
   isAdmin: boolean;
 };
 
 export function toUserDTO(user: UserDTO): UserDTO {
   return {
     id: user.id,
-    email: user.email,
+    username: user.username,
     isAdmin: user.isAdmin
   };
 }

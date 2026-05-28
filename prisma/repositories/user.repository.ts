@@ -10,7 +10,7 @@ export class UserRepository {
   async create(data: UserCreateDTO): Promise<User> {
     return this.prisma.user.create({
       data:{
-        email: data.email,
+        username: data.username,
         passwordHash: data.passwordHash,
         isAdmin: data.isAdmin
       }
@@ -30,9 +30,9 @@ export class UserRepository {
     });
   }
 
-  async getByEmail(email: string): Promise<User | null> {
+  async getByUsername(username: string): Promise<User | null> {
     return this.prisma.user.findUnique({
-      where: {email}
+      where: {username}
     });
   }
 

@@ -27,7 +27,7 @@ export type ReviewCreateDTO = {
 
 
 export type UserCreateDTO = {
-  email: string;
+  username: string;
   passwordHash: string;
   isAdmin?: boolean;
 };
