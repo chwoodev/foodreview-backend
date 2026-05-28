@@ -23,6 +23,7 @@ export type ReviewCreateDTO = {
   taste: number;
   amount: number;
   price: number;
+  imageData: string;
 };
 
 
@@ -30,4 +31,15 @@ export type UserCreateDTO = {
   username: string;
   passwordHash: string;
   isAdmin?: boolean;
+};
+
+export type RestaurantCreateInput = {
+  name: string;
+  imageData: string;
+};
+
+
+export type RestaurantCreateDTO = {
+  name: string;
+  imageData: string;
 };

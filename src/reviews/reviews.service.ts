@@ -11,10 +11,11 @@ export class ReviewsService {
     ) {}
     
 
-    async createReview(data: ReviewCreateDTO, file: Express.Multer.File) {
-        const image = await this.imageRepository.createImage(data.userId, file);
+    async createReview(data: ReviewCreateDTO) {
+        const { imageData, ...rest } = data;
+        const image = await this.imageRepository.createImage(data.userId, imageData);
         const imageId = image.id;
-        const reviewData: ReviewCreateInput = { ...data, imageId };
+        const reviewData: ReviewCreateInput = { ...rest, imageId };
         return await this.reviewRepository.createReview(reviewData);
     }
 }

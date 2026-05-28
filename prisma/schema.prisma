@@ -55,6 +55,7 @@ model Menu {
 model Restaurant {
   id            Int         @id @default(autoincrement())
   name          String
+  imageData     String
   sumTaste      Int         @default(0)
   sumAmount     Int         @default(0)
   sumPrice      Int         @default(0)

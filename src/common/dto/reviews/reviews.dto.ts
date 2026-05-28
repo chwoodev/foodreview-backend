@@ -22,4 +22,7 @@ export class ReviewCreateBodyDTO {
     @Min(1)
     @Max(5)
     price: number;
+
+    @IsString()
+    imageData: string;
 }

@@ -6,8 +6,8 @@ import { Image } from "generated/prisma/client";
 export class ImageRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async createImage(userId: number, file: Express.Multer.File): Promise<Image> {
-        const fileData = new Uint8Array(file.buffer.buffer, file.buffer.byteOffset, file.buffer.byteLength) as Uint8Array<ArrayBuffer>;
+    async createImage(userId: number, imageData: string): Promise<Image> {
+        const fileData = new Uint8Array(Buffer.from(imageData, "base64"));
         return await this.prisma.image.create({
             data: {userId, fileData}
         });
