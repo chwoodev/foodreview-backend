@@ -13,7 +13,15 @@ export class RestaurantsService {
         return await this.restaurantRepository.getRestaurants();
     }
 
+    async getPickerRestaurants() {
+        return await this.restaurantRepository.getPickerRestaurants();
+    }
+
     async createRestaurant(data: RestaurantCreateDTO) {
         return await this.restaurantRepository.createRestaurant(data);
+    }
+
+    async deleteRestaurant(id: number) {
+        return await this.restaurantRepository.deleteRestaurant(id);
     }
 }

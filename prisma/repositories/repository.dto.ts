@@ -1,3 +1,5 @@
+import { Menu, Restaurant } from "generated/prisma/client";
+
 export type ReviewCreateInput = {
   content: string;
   userId: number;
@@ -42,4 +44,25 @@ export type RestaurantCreateInput = {
 export type RestaurantCreateDTO = {
   name: string;
   imageData: string;
+};
+
+export type RestaurantWithMenus = Restaurant & { menus: Menu[] };
+
+
+export type MenuCreateDTO = {
+  name: string;
+};
+
+export type MenuCreateInput = {
+  restaurantId: number;
+  name: string;
+};
+
+
+export type StatUpdateInput = {
+  menuId: number;
+  tasteChange: number;
+  amountChange: number;
+  priceChange: number;
+  reviewCountChange: number;
 };

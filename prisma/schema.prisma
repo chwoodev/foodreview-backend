@@ -36,6 +36,7 @@ model Review {
   taste     Int
   amount    Int
   price     Int
+  createdAt DateTime @default(now())
 }
 
 

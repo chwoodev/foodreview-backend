@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,12 @@ import { ReviewCreateBodyDTO } from 'src/common/dto/reviews/reviews.dto';
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+
+  @Get()
+  async getReviews() {
+    return await this.reviewsService.getReviews();
+  }
 
   @Post('upload')
   @UseGuards(JwtAuthGuard)
