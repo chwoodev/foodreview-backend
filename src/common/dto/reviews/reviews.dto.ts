@@ -1,4 +1,4 @@
-import { IsInt, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsString, Max, Min, MaxLength } from 'class-validator';
 
 
 export class ReviewCreateBodyDTO {
@@ -6,6 +6,7 @@ export class ReviewCreateBodyDTO {
     menuId: number;
 
     @IsString()
+    @MaxLength(200)
     content: string;
 
     @IsInt()

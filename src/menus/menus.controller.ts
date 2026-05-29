@@ -1,5 +1,5 @@
 import {
-    Body,
+  Body,
   Controller,
   Delete,
   ForbiddenException,
@@ -15,15 +15,20 @@ import { RestaurantCreateBodyDTO } from 'src/common/dto/restaurants/restaurants.
 import { MenusService } from './menus.service';
 import { MenuCreateBodyDTO } from 'src/common/dto/menus/menus.dto';
 
-
 @Controller('menus')
 export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 
-
   @Get('restaurant/:restaurantId')
   async getMenus(@Param('restaurantId') id: number) {
     return await this.menusService.getMenus(id);
+  }
+
+  @Delete(':menuId')
+  @UseGuards(JwtAuthGuard)
+  async deleteMenu(@JWTUser() user: JWTPayload, @Param('menuId') id: number) {
+    if (!user.isAdmin) throw new ForbiddenException();
+    return await this.menusService.deleteMenu(id);
   }
 
   @Post('restaurant/:restaurantId/create')
@@ -31,24 +36,10 @@ export class MenusController {
   async createRestaurant(
     @JWTUser() user: JWTPayload,
     @Body() data: MenuCreateBodyDTO,
-    @Param('restaurantId') id: number
+    @Param('restaurantId') id: number,
   ) {
-    if(!user.isAdmin) throw new ForbiddenException();
+    if (!user.isAdmin) throw new ForbiddenException();
     let menu = await this.menusService.createMenu(id, data);
     return menu;
   }
-
-
-  // @Delete(':restaurantId')
-  // @UseGuards(JwtAuthGuard)
-  // async deleteRestaurant(
-  //   @JWTUser() user: JWTPayload,
-  //   @Param('restaurantId') id: number
-  // ) {
-  //   if(!user.isAdmin) throw new ForbiddenException();
-  //   let restaurant = await this.restaurantsService.deleteRestaurant(id);
-  //   return restaurant;
-  // }
-  
-
 }

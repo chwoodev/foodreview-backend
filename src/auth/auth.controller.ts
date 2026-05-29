@@ -7,6 +7,8 @@ import { JWTPayload } from 'src/common/dto/auth/auth.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'generated/prisma/client';
 import { CreateUserDTO, toUserDTO, UserDTO } from 'src/common/dto/users/users.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { JWTUser } from 'src/common/decorators/jwtuser.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -16,14 +18,23 @@ export class AuthController {
   ) { }
 
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   async login(
     @Req() req: Request & {user: User},
     @Res({ passthrough: true }) res: Response
   ): Promise<UserDTO> {
     await this.setupTokens(req.user, res);
     return toUserDTO(req.user);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@JWTUser() user: JWTPayload, @Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt');
+    res.clearCookie('refresh');
+    await this.usersService.resetRefreshToken(user.id);
+    return {};
   }
 
   @Post('signup')

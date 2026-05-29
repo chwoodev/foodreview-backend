@@ -35,6 +35,9 @@ export class UsersService {
     return await this.userRepository.updateRefreshToken(userId, refreshToken);
   }
 
+  async resetRefreshToken(userId: number){
+    return await this.userRepository.resetRefreshToken(userId);
+  }
 
   async getByUsername(username: string) {
     const user = await this.userRepository.getByUsername(username);

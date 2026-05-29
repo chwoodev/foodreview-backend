@@ -23,6 +23,13 @@ export class UserRepository {
       data: {refreshToken}
     });
   }
+
+  async resetRefreshToken(userId: number): Promise<User> {
+    return this.prisma.user.update({
+      where: {id: userId},
+      data: {refreshToken: null}
+    });
+  }
   
   async getById(id: number): Promise<User | null> {
     return this.prisma.user.findUnique({

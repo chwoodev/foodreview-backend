@@ -7,7 +7,7 @@ import { MenuRepository } from "prisma/repositories/menu.repository";
 
 
 @Module({
-    providers: [MenusService, MenuRepository],
+    providers: [MenusService, MenuRepository, RestaurantRepository],
     imports: [PrismaModule],
     exports: [MenusService],
     controllers: [MenusController]
