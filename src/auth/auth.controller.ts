@@ -6,7 +6,11 @@ import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
 import { JWTPayload } from 'src/common/dto/auth/auth.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'generated/prisma/client';
-import { CreateUserDTO, toUserDTO, UserDTO } from 'src/common/dto/users/users.dto';
+import {
+  CreateUserDTO,
+  toUserDTO,
+  UserDTO,
+} from 'src/common/dto/users/users.dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { JWTUser } from 'src/common/decorators/jwtuser.decorator';
 import { UserWithAuth } from 'prisma/repositories/repository.dto';
@@ -16,14 +20,13 @@ export class AuthController {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
-  ) { }
-
+  ) {}
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(
-    @Req() req: Request & {user: UserWithAuth},
-    @Res({ passthrough: true }) res: Response
+    @Req() req: Request & { user: UserWithAuth },
+    @Res({ passthrough: true }) res: Response,
   ): Promise<UserDTO> {
     await this.setupTokens(req.user, res);
     return toUserDTO(req.user);
@@ -31,9 +34,16 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@JWTUser() user: JWTPayload, @Res({ passthrough: true }) res: Response) {
-    res.clearCookie('jwt');
-    res.clearCookie('refresh');
+  async logout(
+    @JWTUser() user: JWTPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const clearOptions = {
+      domain: 'woo.api.newbie.sparcs.net',
+      path: '/',
+    };
+    res.clearCookie('jwt', clearOptions);
+    res.clearCookie('refresh', clearOptions);
     await this.usersService.resetRefreshToken(user.id);
     return {};
   }
@@ -44,14 +54,12 @@ export class AuthController {
     return toUserDTO(newUser);
   }
 
-
   private async setupTokens(user: User, res: Response): Promise<void> {
-    const payload: JWTPayload = {id: user.id, isAdmin: user.isAdmin};
+    const payload: JWTPayload = { id: user.id, isAdmin: user.isAdmin };
     const access = this.authService.getAccessTokenAndOptions(payload);
     const refresh = this.authService.getRefreshTokenAndOptions(payload);
     await this.usersService.updateRefreshToken(user.id, refresh.token);
     res.cookie('jwt', access.token, access.options);
     res.cookie('refresh', refresh.token, refresh.options);
   }
-
 }
