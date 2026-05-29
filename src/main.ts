@@ -12,7 +12,7 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use(requestLogMiddlware);
-  await app.listen(3000);
+  await app.listen(8000);
 }
 bootstrap();
 
