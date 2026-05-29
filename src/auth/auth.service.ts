@@ -36,8 +36,6 @@ export class AuthService {
     };
   }
 
-
-  //TODO! revert cookie domain
   
   getAccessTokenAndOptions(payload: JWTPayload): TokenAndCookieOptions {
     const token = this.jwtService.sign(toJWTPayload(payload), {
@@ -47,7 +45,7 @@ export class AuthService {
     return {
       token,
       options: {
-        domain: '',
+        domain: 'https://woo.api.newbie.sparcs.net',
         path: '/',
         httpOnly: true,
         maxAge: Number(this.configService.get('JWT_ACCESS_TOKEN_EXP_SEC')) * 1000,
@@ -63,7 +61,7 @@ export class AuthService {
     return {
       token,
       options: {
-        domain: '',
+        domain: 'https://woo.api.newbie.sparcs.net',
         path: '/',
         httpOnly: true,
         maxAge: Number(this.configService.get('JWT_ACCESS_TOKEN_EXP_SEC')) * 1000,
