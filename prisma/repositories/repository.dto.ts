@@ -1,4 +1,4 @@
-import { Menu, Restaurant } from "generated/prisma/client";
+import { Auth, Menu, Restaurant, Review, Stat, User } from "generated/prisma/client";
 
 export type ReviewCreateInput = {
   content: string;
@@ -28,12 +28,21 @@ export type ReviewCreateDTO = {
   imageData: string;
 };
 
+export type ReviewDTO = Review & { likeCount: number; liked: boolean };
+
+export type ReviewWithLikeInfo = Review & {
+  _count: { likes: number };
+  likes: { id: number }[];
+};
+
 
 export type UserCreateDTO = {
   username: string;
   passwordHash: string;
   isAdmin?: boolean;
 };
+
+export type UserWithAuth = User & { auth: Auth | null };
 
 export type RestaurantCreateInput = {
   name: string;
@@ -46,7 +55,19 @@ export type RestaurantCreateDTO = {
   imageData: string;
 };
 
-export type RestaurantWithMenus = Restaurant & { menus: Menu[] };
+export type StatFields = Pick<Stat, 'sumTaste' | 'sumAmount' | 'sumPrice' | 'reviewCount'>;
+
+export type MenuDTO = Menu & StatFields;
+
+export type RestaurantDTO = Restaurant & StatFields;
+
+export type RestaurantWithMenus = RestaurantDTO & { menus: Menu[] };
+
+export type MenuWithStat = Menu & { stat: Stat | null };
+
+export type RestaurantWithStat = Restaurant & { stat: Stat | null };
+
+export type RestaurantWithMenusAndStat = RestaurantWithStat & { menus: MenuWithStat[] };
 
 
 export type MenuCreateDTO = {

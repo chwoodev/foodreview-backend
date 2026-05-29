@@ -9,6 +9,7 @@ import { User } from 'generated/prisma/client';
 import { CreateUserDTO, toUserDTO, UserDTO } from 'src/common/dto/users/users.dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { JWTUser } from 'src/common/decorators/jwtuser.decorator';
+import { UserWithAuth } from 'prisma/repositories/repository.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,7 +22,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(
-    @Req() req: Request & {user: User},
+    @Req() req: Request & {user: UserWithAuth},
     @Res({ passthrough: true }) res: Response
   ): Promise<UserDTO> {
     await this.setupTokens(req.user, res);
@@ -48,7 +49,7 @@ export class AuthController {
     const payload: JWTPayload = {id: user.id, isAdmin: user.isAdmin};
     const access = this.authService.getAccessTokenAndOptions(payload);
     const refresh = this.authService.getRefreshTokenAndOptions(payload);
-    this.usersService.updateRefreshToken(user.id, refresh.token);
+    await this.usersService.updateRefreshToken(user.id, refresh.token);
     res.cookie('jwt', access.token, access.options);
     res.cookie('refresh', refresh.token, refresh.options);
   }

@@ -18,24 +18,24 @@ export class ReviewsService {
     private readonly imageRepository: ImageRepository,
   ) {}
 
-  async getReviews() {
-    return await this.reviewRepository.getReviews();
+  async getReviews(userId?: number) {
+    return await this.reviewRepository.getReviews(userId);
   }
 
-  async getReview(id: number) {
-    return await this.reviewRepository.getReview(id);
+  async getReview(id: number, userId?: number) {
+    return await this.reviewRepository.getReview(id, userId);
   }
 
   async getMyReviews(id: number) {
     return await this.reviewRepository.getMyReviews(id);
   }
 
-  async getReviewsForMenu(id: number) {
-    return await this.reviewRepository.getReviewsForMenu(id);
+  async getReviewsForMenu(id: number, userId?: number) {
+    return await this.reviewRepository.getReviewsForMenu(id, userId);
   }
 
-  async deleteReview(id: number) {
-    let review = await this.reviewRepository.getReview(id);
+  async deleteReview(id: number, userId?: number) {
+    let review = await this.reviewRepository.getReview(id, userId);
     if (!review) throw new NotFoundException();
 
     let changes: StatUpdateInput = {
@@ -51,7 +51,7 @@ export class ReviewsService {
       this.restaurantRepository.updateStat(changes),
     ]);
 
-    return await this.reviewRepository.deleteReview(id);
+    return await this.reviewRepository.deleteReview(id, userId);
   }
 
   async createReview(data: ReviewCreateDTO) {
@@ -77,5 +77,19 @@ export class ReviewsService {
     ]);
 
     return await this.reviewRepository.createReview(reviewData);
+  }
+
+  async likeReview(userId: number, reviewId: number) {
+    const review = await this.reviewRepository.getReview(reviewId);
+    if (!review) throw new NotFoundException();
+    await this.reviewRepository.likeReview(userId, reviewId);
+    return { liked: true };
+  }
+
+  async removeLike(userId: number, reviewId: number) {
+    const review = await this.reviewRepository.getReview(reviewId);
+    if (!review) throw new NotFoundException();
+    await this.reviewRepository.removeLike(userId, reviewId);
+    return { liked: false };
   }
 }

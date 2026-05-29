@@ -17,7 +17,8 @@ export class AuthService {
   async validateUser(username: string, password: string) {
     try {
       const user = await this.usersService.getByUsername(username);
-      const success = await bcrypt.compare(password, user.passwordHash);
+      if (!user.auth) return null;
+      const success = await bcrypt.compare(password, user.auth.passwordHash);
       if (success) return user;
     } catch (e) {
       return null;
@@ -26,8 +27,8 @@ export class AuthService {
   }
 
   async refreshUserToken(userId: number, refreshToken: string): Promise<TokenRefreshPayload> {
-    const user = await this.usersService.getUserById(userId);
-    if (!user || user.refreshToken !== refreshToken) throw new RefreshTokenInvalidException();
+    const user = await this.usersService.getByIdWithAuth(userId);
+    if (!user.auth || user.auth.refreshToken !== refreshToken) throw new RefreshTokenInvalidException();
     const payload: JWTPayload = { id: user.id, isAdmin: user.isAdmin };
     return {
       ...payload,

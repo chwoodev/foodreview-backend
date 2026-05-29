@@ -15,6 +15,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { JWTUser } from 'src/common/decorators/jwtuser.decorator';
 import { JWTPayload } from 'src/common/dto/auth/auth.dto';
 import { ReviewCreateBodyDTO } from 'src/common/dto/reviews/reviews.dto';
+import { Public } from 'src/auth/decorator/skip-auth.decorator';
 
 
 
@@ -24,8 +25,10 @@ export class ReviewsController {
 
 
   @Get()
-  async getReviews() {
-    return await this.reviewsService.getReviews();
+  @Public()
+  @UseGuards(JwtAuthGuard)
+  async getReviews(@JWTUser() user?: JWTPayload) {
+    return await this.reviewsService.getReviews(user?.id);
   }
 
   @Get('my')
@@ -35,8 +38,13 @@ export class ReviewsController {
   }
 
   @Get('menu/:menuId')
-  async getReviewsForMenu(@Param('menuId') id: number) {
-    return await this.reviewsService.getReviewsForMenu(id);
+  @Public()
+  @UseGuards(JwtAuthGuard)
+  async getReviewsForMenu(
+    @Param('menuId') id: number,
+    @JWTUser() user?: JWTPayload
+  ) {
+    return await this.reviewsService.getReviewsForMenu(id, user?.id);
   }
 
   @Post('upload')
@@ -56,10 +64,28 @@ export class ReviewsController {
     @JWTUser() user: JWTPayload,
     @Param('reviewId') id: number
   ) {
-    let review = await this.reviewsService.getReview(id);
+    let review = await this.reviewsService.getReview(id, user.id);
     if(!review) throw new NotFoundException();
     if(user.id != review.userId && !user.isAdmin) throw new UnauthorizedException();
-    return await this.reviewsService.deleteReview(id);
+    return await this.reviewsService.deleteReview(id, user.id);
+  }
+
+  @Post(':reviewId/like')
+  @UseGuards(JwtAuthGuard)
+  async likeReview(
+    @JWTUser() user: JWTPayload,
+    @Param('reviewId') id: number
+  ) {
+    return await this.reviewsService.likeReview(user.id, id);
+  }
+
+  @Delete(':reviewId/like')
+  @UseGuards(JwtAuthGuard)
+  async removeLike(
+    @JWTUser() user: JWTPayload,
+    @Param('reviewId') id: number
+  ) {
+    return await this.reviewsService.removeLike(user.id, id);
   }
 
 }

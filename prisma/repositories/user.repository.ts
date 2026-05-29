@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User } from 'generated/prisma/client';
-import { UserCreateDTO } from './repository.dto';
+import { UserCreateDTO, UserWithAuth } from './repository.dto';
 
 @Injectable()
 export class UserRepository {
@@ -11,22 +11,26 @@ export class UserRepository {
     return this.prisma.user.create({
       data:{
         username: data.username,
-        passwordHash: data.passwordHash,
-        isAdmin: data.isAdmin
+        isAdmin: data.isAdmin,
+        auth: {
+          create: {
+            passwordHash: data.passwordHash,
+          },
+        },
       }
     });
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string): Promise<User> {
-    return this.prisma.user.update({
-      where: {id: userId},
+  async updateRefreshToken(userId: number, refreshToken: string) {
+    return this.prisma.auth.update({
+      where: {userId},
       data: {refreshToken}
     });
   }
 
-  async resetRefreshToken(userId: number): Promise<User> {
-    return this.prisma.user.update({
-      where: {id: userId},
+  async resetRefreshToken(userId: number) {
+    return this.prisma.auth.update({
+      where: {userId},
       data: {refreshToken: null}
     });
   }
@@ -37,9 +41,17 @@ export class UserRepository {
     });
   }
 
-  async getByUsername(username: string): Promise<User | null> {
+  async getByIdWithAuth(id: number): Promise<UserWithAuth | null> {
     return this.prisma.user.findUnique({
-      where: {username}
+      where: {id},
+      include: {auth: true}
+    });
+  }
+
+  async getByUsername(username: string): Promise<UserWithAuth | null> {
+    return this.prisma.user.findUnique({
+      where: {username},
+      include: {auth: true}
     });
   }
 

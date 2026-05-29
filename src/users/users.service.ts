@@ -50,4 +50,10 @@ export class UsersService {
     if(!user) throw new NotFoundException();
     return user;
   }
+
+  async getByIdWithAuth(id: number) {
+    const user = await this.userRepository.getByIdWithAuth(id);
+    if(!user) throw new NotFoundException();
+    return user;
+  }
 }
